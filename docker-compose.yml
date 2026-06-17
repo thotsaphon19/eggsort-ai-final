@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  eggsort:
+    build: .
+    image: eggsort-ai:latest
+    container_name: eggsort
+
+    # ── กล้อง USB ──────────────────────────────────────────────────────────
+    devices:
+      - /dev/video0:/dev/video0   # แก้เป็น /dev/video1 ถ้าใช้กล้องตัวที่ 2
+    privileged: false
+    group_add:
+      - video
+
+    # ── ports ──────────────────────────────────────────────────────────────
+    ports:
+      - "8080:8080"   # Web Dashboard
+      - "8765:8765"   # WebSocket
+
+    # ── environment ────────────────────────────────────────────────────────
+    env_file: .env    # ใส่ ANTHROPIC_API_KEY ใน .env
+    environment:
+      - CAMERA_INDEX=0
+      - CAPTURE_INTERVAL=2.0
+      - SAVE_IMAGES=true
+
+    # ── logs volume ────────────────────────────────────────────────────────
+    volumes:
+      - ./logs:/app/logs
+
+    # ── restart policy ─────────────────────────────────────────────────────
+    restart: unless-stopped
+
+    # ── health check ───────────────────────────────────────────────────────
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/api/stats')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"

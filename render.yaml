@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: eggsort-ai
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/stats
+
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: RENDER
+        value: "true"
+      - key: EDGE_SECRET
+        sync: false
+      - key: CAPTURE_INTERVAL
+        value: "2.0"
+      - key: SAVE_IMAGES
+        value: "false"
+      - key: DB_PATH
+        value: "/data/eggsort.db"   # ← ใช้ Render Disk
+
+    # Render Disk — เก็บ SQLite ถาวร ไม่หายเมื่อ redeploy
+    disk:
+      name: eggsort-data
+      mountPath: /data
+      sizeGB: 1              # 1 GB ฟรี
+
+    autoDeploy: true

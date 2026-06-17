@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EggSort AI — ประวัติ & Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --ink:#0a0c10;--ink2:#111318;--ink3:#181c24;--ink4:#1e2330;
+  --wire:rgba(255,255,255,.06);--wire2:rgba(255,255,255,.11);--wire3:rgba(255,255,255,.2);
+  --tx:#dde2ee;--dim:#6b7394;--dimmer:#3d4460;
+  --aa:#a3e635;--a:#38bdf8;--b:#fb923c;--c:#f43f5e;
+  --go:#22c55e;--stop:#ef4444;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ink);color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:13px;min-height:100vh;}
+.topbar{background:var(--ink2);border-bottom:1px solid var(--wire2);height:48px;display:flex;align-items:center;padding:0 20px;gap:14px;position:sticky;top:0;z-index:100;}
+.topbar a{color:var(--dim);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:5px;}
+.topbar a:hover{color:var(--tx);}
+.topbar h1{font-size:14px;font-weight:600;flex:1;}
+.content{max-width:1200px;margin:0 auto;padding:20px;}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+.kpi{background:var(--ink3);border:1px solid var(--wire);border-radius:8px;padding:14px;}
+.kpi-l{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-family:var(--mono);}
+.kpi-v{font-size:22px;font-weight:700;font-family:var(--mono);line-height:1;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.card{background:var(--ink3);border:1px solid var(--wire);border-radius:10px;padding:16px;}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:14px;font-family:var(--mono);}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:flex-end;}
+.filter-group{display:flex;flex-direction:column;gap:4px;}
+.filter-group label{font-size:10px;color:var(--dim);font-family:var(--mono);}
+input[type=date],select,input[type=number]{background:var(--ink4);border:1px solid var(--wire2);border-radius:4px;color:var(--tx);padding:6px 10px;font-size:12px;font-family:var(--mono);}
+.btn{padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:all .12s;}
+.btn-primary{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--a);}
+.btn-primary:hover{background:rgba(56,189,248,.2);}
+.btn-ghost{background:var(--ink4);border-color:var(--wire2);color:var(--dim);}
+.btn-ghost:hover{color:var(--tx);border-color:var(--wire3);}
+.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--wire);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{color:var(--dim);font-weight:500;padding:8px 12px;border-bottom:1px solid var(--wire);text-align:left;background:var(--ink4);position:sticky;top:0;font-family:var(--mono);}
+td{padding:7px 12px;border-bottom:1px solid var(--wire);font-family:var(--mono);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.badge{padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;}
+.g-AA{background:rgba(163,230,53,.1);color:var(--aa);}
+.g-A{background:rgba(56,189,248,.1);color:var(--a);}
+.g-B{background:rgba(251,146,60,.1);color:var(--b);}
+.g-C{background:rgba(244,63,94,.1);color:var(--c);}
+.pass{background:rgba(34,197,94,.1);color:var(--go);}
+.check{background:rgba(251,191,36,.1);color:#fbbf24;}
+.reject{background:rgba(239,68,68,.1);color:var(--stop);}
+.pager{display:flex;gap:6px;align-items:center;margin-top:12px;justify-content:flex-end;}
+.pager span{font-size:11px;color:var(--dim);font-family:var(--mono);}
+.loading{text-align:center;padding:32px;color:var(--dimmer);font-family:var(--mono);font-size:12px;}
+.empty{text-align:center;padding:32px;color:var(--dimmer);font-size:12px;}
+.chart-wrap{position:relative;height:200px;}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--wire2);margin-bottom:16px;}
+.tab{padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;color:var(--dim);border-bottom:2px solid transparent;transition:all .15s;}
+.tab.active{color:var(--a);border-bottom-color:var(--a);}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/">← Dashboard</a>
+  <h1>ประวัติ &amp; Analytics</h1>
+  <span id="db-count" style="font-family:var(--mono);font-size:11px;color:var(--dim);">กำลังโหลด...</span>
+</div>
+
+<div class="content">
+
+  <!-- KPI row -->
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">ทั้งหมด</div><div class="kpi-v" id="k-total">—</div></div>
+    <div class="kpi"><div class="kpi-l">ผ่าน AA+A</div><div class="kpi-v" id="k-pass" style="color:var(--go)">—</div></div>
+    <div class="kpi"><div class="kpi-l">อัตราผ่าน</div><div class="kpi-v" id="k-rate">—</div></div>
+    <div class="kpi"><div class="kpi-l">ความมั่นใจเฉลี่ย</div><div class="kpi-v" id="k-conf">—</div></div>
+    <div class="kpi"><div class="kpi-l">เซสชันทั้งหมด</div><div class="kpi-v" id="k-sess">—</div></div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">ปริมาณรายวัน (30 วันล่าสุด)</div>
+      <div class="chart-wrap"><canvas id="chart-daily"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">สัดส่วนเกรด</div>
+      <div class="chart-wrap"><canvas id="chart-grade"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Hourly + Shell -->
+  <div class="grid2" style="margin-bottom:14px;">
+    <div class="card">
+      <div class="card-title">รายชั่วโมงวันนี้</div>
+      <div class="chart-wrap"><canvas id="chart-hourly"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">สภาพเปลือก</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;" id="shell-list">
+        <div class="loading">กำลังโหลด...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History table -->
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('scans')">ประวัติการสแกน</div>
+      <div class="tab" onclick="switchTab('sessions')">เซสชัน</div>
+    </div>
+
+    <div id="tab-scans" class="tab-panel active">
+      <div class="filters">
+        <div class="filter-group">
+          <label>วันที่เริ่ม</label>
+          <input type="date" id="f-from" />
+        </div>
+        <div class="filter-group">
+          <label>วันที่สิ้นสุด</label>
+          <input type="date" id="f-to" />
+        </div>
+        <div class="filter-group">
+          <label>เกรด</label>
+          <select id="f-grade">
+            <option value="">ทั้งหมด</option>
+            <option>AA</option><option>A</option><option>B</option><option>C</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>แสดง</label>
+          <select id="f-limit">
+            <option value="100">100 รายการ</option>
+            <option value="200" selected>200 รายการ</option>
+            <option value="500">500 รายการ</option>
+          </select>
+        </div>
+        <div class="filter-group" style="justify-content:flex-end;">
+          <label>&nbsp;</label>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-primary" onclick="loadScans(1)">ค้นหา</button>
+            <button class="btn btn-ghost" onclick="exportCSV()">⬇ CSV</button>
+          </div>
+        </div>
+      </div>
+      <div id="scans-table-wrap">
+        <div class="loading">กำลังโหลด...</div>
+      </div>
+      <div class="pager" id="pager"></div>
+    </div>
+
+    <div id="tab-sessions" class="tab-panel">
+      <div id="sessions-table-wrap"><div class="loading">กำลังโหลด...</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentPage = 1;
+let totalRows   = 0;
+let charts      = {};
+
+const BASE = window.location.origin;
+const WS_PORT = 8765;
+
+const GC = { AA:'#a3e635', A:'#38bdf8', B:'#fb923c', C:'#f43f5e' };
+const CHART_DEFAULTS = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { labels: { color:'#6b7394', font:{size:11} } } },
+  scales: {
+    x: { ticks:{color:'#6b7394',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'} },
+    y: { ticks:{color:'#6b7394',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'} },
+  }
+};
+
+async function api(path) {
+  const r = await fetch(BASE + path);
+  return r.json();
+}
+
+async function init() {
+  const [analytics, hourly] = await Promise.all([
+    api('/api/analytics?days=30'),
+    api('/api/hourly'),
+  ]);
+
+  renderKPI(analytics);
+  renderDailyChart(analytics.daily);
+  renderGradeChart(analytics.overall);
+  renderHourlyChart(hourly.data);
+  renderShell(analytics.shell);
+  loadScans(1);
+  loadSessions();
+}
+
+function renderKPI(a) {
+  const o = a.overall || {};
+  const total = o.total || 0;
+  const pass  = (o.AA||0) + (o.A||0);
+  document.getElementById('k-total').textContent = total.toLocaleString();
+  document.getElementById('k-pass').textContent  = pass.toLocaleString();
+  document.getElementById('k-rate').textContent  = total ? (o.pass_rate||0)+'%' : '—';
+  document.getElementById('k-conf').textContent  = (o.avg_conf||0)+'%';
+  document.getElementById('k-sess').textContent  = (a.sessions||[]).length;
+  document.getElementById('db-count').textContent = total.toLocaleString()+' ฟอง';
+}
+
+function renderDailyChart(daily) {
+  const labels = daily.map(d => d.day.slice(5));
+  const ctx = document.getElementById('chart-daily').getContext('2d');
+  if (charts.daily) charts.daily.destroy();
+  charts.daily = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label:'AA', data: daily.map(d=>d.cnt_AA), backgroundColor:'rgba(163,230,53,.7)', stack:'g' },
+        { label:'A',  data: daily.map(d=>d.cnt_A),  backgroundColor:'rgba(56,189,248,.7)',  stack:'g' },
+        { label:'B',  data: daily.map(d=>d.cnt_B),  backgroundColor:'rgba(251,146,60,.7)',  stack:'g' },
+        { label:'C',  data: daily.map(d=>d.cnt_C),  backgroundColor:'rgba(244,63,94,.7)',   stack:'g' },
+      ]
+    },
+    options: { ...CHART_DEFAULTS, plugins: { ...CHART_DEFAULTS.plugins, tooltip:{mode:'index'} } }
+  });
+}
+
+function renderGradeChart(o) {
+  const ctx = document.getElementById('chart-grade').getContext('2d');
+  if (charts.grade) charts.grade.destroy();
+  if (!o || !o.total) return;
+  charts.grade = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['AA','A','B','C'],
+      datasets: [{ data:[o.AA,o.A,o.B,o.C], backgroundColor:Object.values(GC), borderWidth:0 }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right', labels:{color:'#6b7394',font:{size:11}} } } }
+  });
+}
+
+function renderHourlyChart(data) {
+  const hours = Array.from({length:24},(_,i)=>String(i).padStart(2,'0'));
+  const byHour = Object.fromEntries(data.map(d=>[d.hour, d]));
+  const ctx = document.getElementById('chart-hourly').getContext('2d');
+  if (charts.hourly) charts.hourly.destroy();
+  charts.hourly = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: hours,
+      datasets: [{
+        label:'ฟอง/ชั่วโมง',
+        data: hours.map(h => byHour[h]?.total || 0),
+        borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,.08)',
+        fill:true, tension:.3, pointRadius:3, borderWidth:2,
+      }]
+    },
+    options: CHART_DEFAULTS
+  });
+}
+
+function renderShell(data) {
+  const el = document.getElementById('shell-list');
+  if (!data || !data.length) { el.innerHTML='<div class="empty">ไม่มีข้อมูล</div>'; return; }
+  const total = data.reduce((s,r)=>s+r.cnt,0);
+  el.innerHTML = data.map(r => {
+    const pct = Math.round(r.cnt/total*100);
+    const color = r.shell_condition==='ปกติ'?'var(--go)':r.shell_condition==='รอยร้าว'?'var(--b)':'var(--stop)';
+    return `<div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-family:var(--mono);font-size:11px;width:70px;color:${color}">${r.shell_condition||'ไม่ระบุ'}</span>
+      <div style="flex:1;background:rgba(255,255,255,.06);border-radius:100px;height:6px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:100px;"></div>
+      </div>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--dim);min-width:50px;text-align:right">${r.cnt} (${pct}%)</span>
+    </div>`;
+  }).join('');
+}
+
+async function loadScans(page) {
+  currentPage = page;
+  const from  = document.getElementById('f-from').value;
+  const to    = document.getElementById('f-to').value;
+  const grade = document.getElementById('f-grade').value;
+  const limit = document.getElementById('f-limit').value;
+  const wrap  = document.getElementById('scans-table-wrap');
+  wrap.innerHTML = '<div class="loading">กำลังโหลด...</div>';
+
+  let url = `/api/history?limit=${limit}&page=${page}`;
+  if (from)  url += `&from=${from}`;
+  if (to)    url += `&to=${to}`;
+  if (grade) url += `&grade=${grade}`;
+
+  const data = await api(url);
+  totalRows = data.total;
+  document.getElementById('db-count').textContent = data.total.toLocaleString()+' ฟอง';
+
+  if (!data.data.length) {
+    wrap.innerHTML = '<div class="empty">ไม่พบข้อมูล</div>';
+    document.getElementById('pager').innerHTML = '';
+    return;
+  }
+
+  const recBadge = rec => {
+    const cls = rec==='ผ่าน'?'pass':rec==='ตรวจสอบ'?'check':'reject';
+    return `<span class="badge ${cls}">${rec||'—'}</span>`;
+  };
+
+  wrap.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>#</th><th>วันที่เวลา</th><th>เกรด</th><th>น้ำหนัก</th>
+      <th>ความมั่นใจ</th><th>เปลือก</th><th>สี</th><th>ผล</th>
+    </tr></thead>
+    <tbody>${data.data.map(r=>`<tr>
+      <td style="color:var(--dimmer)">${r.id}</td>
+      <td>${r.scanned_at.replace('T',' ')}</td>
+      <td><span class="badge g-${r.grade}">${r.grade}</span></td>
+      <td>${r.estimated_weight||'—'}</td>
+      <td>${r.confidence!=null?r.confidence+'%':'—'}</td>
+      <td>${r.shell_condition||'—'}</td>
+      <td>${r.color||'—'}</td>
+      <td>${recBadge(r.recommendation)}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+
+  renderPager(data.total, page, parseInt(limit));
+}
+
+function renderPager(total, page, limit) {
+  const pages = Math.ceil(total/limit);
+  const el = document.getElementById('pager');
+  if (pages <= 1) { el.innerHTML=''; return; }
+  el.innerHTML = `
+    <span>หน้า ${page} / ${pages} (${total.toLocaleString()} รายการ)</span>
+    <button class="btn btn-ghost" style="padding:5px 10px" onclick="loadScans(${page-1})" ${page<=1?'disabled':''}>←</button>
+    <button class="btn btn-ghost" style="padding:5px 10px" onclick="loadScans(${page+1})" ${page>=pages?'disabled':''}>→</button>
+  `;
+}
+
+async function loadSessions() {
+  const data = await api('/api/analytics?days=365');
+  const wrap = document.getElementById('sessions-table-wrap');
+  const sess = data.sessions || [];
+  if (!sess.length) { wrap.innerHTML='<div class="empty">ยังไม่มีเซสชัน</div>'; return; }
+  wrap.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Session</th><th>เริ่ม</th><th>สิ้นสุด</th><th>ทั้งหมด</th><th>ผ่าน</th><th>อัตราผ่าน</th></tr></thead>
+    <tbody>${sess.map(s=>`<tr>
+      <td style="color:var(--dimmer)">#${s.id}</td>
+      <td>${s.started_at.replace('T',' ')}</td>
+      <td>${s.ended_at?s.ended_at.replace('T',' '):'<span style="color:var(--go)">กำลังทำงาน</span>'}</td>
+      <td style="font-family:var(--mono)">${s.total}</td>
+      <td style="font-family:var(--mono);color:var(--go)">${s.pass_count}</td>
+      <td style="font-family:var(--mono)">${s.pass_rate}%</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function exportCSV() {
+  const from  = document.getElementById('f-from').value;
+  const to    = document.getElementById('f-to').value;
+  const grade = document.getElementById('f-grade').value;
+  let url = '/export?limit=10000';
+  if (from)  url += `&from=${from}`;
+  if (to)    url += `&to=${to}`;
+  if (grade) url += `&grade=${grade}`;
+  window.location.href = url;
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['scans','sessions'][i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+const today = new Date().toISOString().slice(0,10);
+const month = new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+document.getElementById('f-from').value = month;
+document.getElementById('f-to').value   = today;
+
+init();
+</script>
+</body>
+</html>
