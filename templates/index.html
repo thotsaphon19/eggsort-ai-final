@@ -64,29 +64,24 @@ body { background: var(--ink); color: var(--text); font-family: var(--sans); fon
 .cam-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--dimmer); }
 .cam-empty svg { opacity: .4; }
 .cam-empty p { font-family: var(--mono); font-size: 12px; }
-/* scan overlay */
 .scan-beam { position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent 0%, var(--aa-h) 40%, var(--aa-h) 60%, transparent 100%); opacity: 0; pointer-events: none; transition: opacity .4s; }
 .scan-beam.active { opacity: .7; animation: beam 2s linear infinite; }
 @keyframes beam { from { top: 0; } to { top: 100%; } }
-/* corner brackets */
 .cam-area::before, .cam-area::after { content: ''; position: absolute; width: 20px; height: 20px; border-color: var(--aa-h); border-style: solid; opacity: 0; transition: opacity .4s; z-index: 2; pointer-events: none; }
 .cam-area::before { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
 .cam-area::after  { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
 .cam-area.live::before, .cam-area.live::after { opacity: 1; }
-/* grade stamp */
 .grade-stamp { position: absolute; top: 12px; right: 12px; z-index: 3; }
 .grade-pill { padding: 6px 14px; border-radius: 4px; font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: .06em; backdrop-filter: blur(4px); border: 1px solid; transition: all .3s; }
 .grade-pill.AA { background: var(--aa-dim); color: var(--aa-h); border-color: rgba(163,230,53,.3); }
 .grade-pill.A  { background: var(--a-dim);  color: var(--a-h);  border-color: rgba(56,189,248,.3); }
 .grade-pill.B  { background: var(--b-dim);  color: var(--b-h);  border-color: rgba(251,146,60,.3); }
 .grade-pill.C  { background: var(--c-dim);  color: var(--c-h);  border-color: rgba(244,63,94,.3); }
-/* weight overlay */
 .weight-tag { position: absolute; bottom: 12px; left: 12px; font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.7); background: rgba(0,0,0,.55); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 3px; z-index: 3; }
-/* confidence bar */
 .conf-bar-wrap { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,.05); z-index: 3; }
 .conf-bar { height: 100%; background: var(--aa-h); transition: width .5s ease, background .3s; }
 
-/* ── bottom strip: conveyor ──────────────────────── */
+/* ── conveyor strip ──────────────────────────────── */
 .conveyor-strip { height: 64px; background: var(--ink3); border-top: 1px solid var(--wire2); display: flex; align-items: center; gap: 0; overflow: hidden; flex-shrink: 0; padding: 0 12px; position: relative; }
 .conv-label { font-size: 10px; color: var(--dimmer); text-transform: uppercase; letter-spacing: .08em; font-family: var(--mono); writing-mode: horizontal-tb; white-space: nowrap; margin-right: 12px; flex-shrink: 0; }
 .belt { flex: 1; display: flex; align-items: center; gap: 6px; overflow: hidden; height: 100%; position: relative; }
@@ -102,8 +97,6 @@ body { background: var(--ink); color: var(--text); font-family: var(--sans); fon
 /* ── right panel ─────────────────────────────────── */
 .sec { border-bottom: 1px solid var(--wire); padding: 14px 16px; }
 .sec-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--dimmer); margin-bottom: 12px; font-family: var(--mono); }
-
-/* controls */
 .ctrl-cam { display: flex; gap: 6px; margin-bottom: 10px; }
 select { flex: 1; background: var(--ink3); border: 1px solid var(--wire2); border-radius: 4px; color: var(--text); padding: 6px 8px; font-size: 12px; font-family: var(--mono); outline: none; }
 select:focus { border-color: var(--wire3); }
@@ -123,8 +116,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
 .btn-halt:hover:not(:disabled) { background: rgba(239,68,68,.18); }
 .btn-reset { background: var(--ink3); border-color: var(--wire2); color: var(--dim); flex: 0 0 auto; padding: 9px 12px; }
 .btn-reset:hover { color: var(--text); border-color: var(--wire3); }
-
-/* grade bars */
 .grade-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .grade-lbl { font-family: var(--mono); font-size: 12px; font-weight: 600; width: 22px; }
 .grade-lbl.AA { color: var(--aa-h); } .grade-lbl.A { color: var(--a-h); }
@@ -134,8 +125,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
 .fill-AA { background: var(--aa-h); } .fill-A { background: var(--a-h); }
 .fill-B  { background: var(--b-h); } .fill-C { background: var(--c-h); }
 .grade-n { font-family: var(--mono); font-size: 11px; color: var(--dim); width: 22px; text-align: right; }
-
-/* last result detail */
 .result-big { text-align: center; padding: 12px 0 8px; }
 .result-glyph { font-family: var(--mono); font-size: 52px; font-weight: 600; line-height: 1; }
 .result-glyph.AA { color: var(--aa-h); text-shadow: 0 0 24px var(--aa-glow); }
@@ -148,8 +137,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
 .chip.pass   { background: rgba(34,197,94,.08);  border-color: rgba(34,197,94,.2);  color: var(--go); }
 .chip.check  { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.2); color: var(--amber); }
 .chip.reject { background: rgba(239,68,68,.08);  border-color: rgba(239,68,68,.2);  color: var(--stop); }
-
-/* log */
 .log-scroll { max-height: 220px; overflow-y: auto; }
 .log-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--wire); font-family: var(--mono); font-size: 11px; }
 .log-row:last-child { border-bottom: none; }
@@ -163,17 +150,12 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
 .log-rec.pass   { background: rgba(34,197,94,.12);  color: var(--go); }
 .log-rec.check  { background: rgba(245,158,11,.12); color: var(--amber); }
 .log-rec.reject { background: rgba(239,68,68,.12);  color: var(--stop); }
-
-/* clock */
 .session-clock { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--text); text-align: center; letter-spacing: .1em; padding: 6px 0 2px; }
 .session-sub   { font-size: 10px; color: var(--dimmer); text-align: center; font-family: var(--mono); padding-bottom: 4px; }
 .export-btn { display: block; margin: 10px 0 0; padding: 8px 0; text-align: center; border-radius: 4px; font-size: 11px; font-family: var(--mono); color: var(--dim); background: var(--ink3); border: 1px solid var(--wire2); cursor: pointer; text-decoration: none; transition: all .12s; }
 .export-btn:hover { color: var(--text); border-color: var(--wire3); }
-
-/* toast */
 #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(12px); background: var(--ink4); border: 1px solid var(--wire3); border-radius: 6px; padding: 8px 16px; font-size: 12px; font-family: var(--mono); opacity: 0; transition: all .2s; pointer-events: none; white-space: nowrap; z-index: 999; }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
 ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--wire2); border-radius: 100px; }
 </style>
 </head>
@@ -219,8 +201,8 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       </div>
     </div>
 
-    <a href="/history" style="padding:0 14px;border-left:1px solid var(--wire2);height:100%;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--dim);text-decoration:none;" onmouseover="this.style.color='var(--tx)'" onmouseout="this.style.color='var(--dim)'">&#9776; ประวัติ &amp; Analytics</a>
-  <div class="tb-right">
+    <a href="/history" style="padding:0 14px;border-left:1px solid var(--wire2);height:100%;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--dim);text-decoration:none;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--dim)'">&#9776; ประวัติ &amp; Analytics</a>
+    <div class="tb-right">
       <div class="pulse" id="ws-pulse"></div>
       <span class="ws-label" id="ws-label">connecting…</span>
     </div>
@@ -238,7 +220,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       </div>
       <img id="cam-img" class="cam-img" alt="live feed" />
       <div class="scan-beam" id="scan-beam"></div>
-
       <div class="grade-stamp" id="grade-stamp" style="display:none">
         <div class="grade-pill" id="grade-pill">—</div>
       </div>
@@ -246,7 +227,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       <div class="conf-bar-wrap"><div class="conf-bar" id="conf-bar" style="width:0%"></div></div>
     </div>
 
-    <!-- conveyor belt strip -->
     <div class="conveyor-strip">
       <div class="conv-label">สายพาน</div>
       <div class="belt" id="belt">
@@ -257,14 +237,11 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
 
   <!-- ── RIGHT PANEL ────────────────────────────────── -->
   <aside class="panel">
-
-    <!-- session clock -->
     <div class="sec">
       <div class="session-clock" id="session-clock">00:00:00</div>
       <div class="session-sub">เวลาทำงานเซสชัน</div>
     </div>
 
-    <!-- controls -->
     <div class="sec">
       <div class="sec-label">กล้อง</div>
       <div class="ctrl-cam">
@@ -283,7 +260,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       </div>
     </div>
 
-    <!-- last result -->
     <div class="sec">
       <div class="sec-label">ผลล่าสุด</div>
       <div class="result-big" id="result-big">
@@ -293,7 +269,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       </div>
     </div>
 
-    <!-- grade distribution -->
     <div class="sec">
       <div class="sec-label">การกระจาย</div>
       <div class="grade-row"><span class="grade-lbl AA">AA</span><div class="grade-track"><div class="grade-fill fill-AA" id="bar-AA" style="width:0%"></div></div><span class="grade-n" id="n-AA">0</span></div>
@@ -302,7 +277,6 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       <div class="grade-row"><span class="grade-lbl C">C</span><div class="grade-track"><div class="grade-fill fill-C"  id="bar-C"  style="width:0%"></div></div><span class="grade-n" id="n-C">0</span></div>
     </div>
 
-    <!-- log -->
     <div class="sec" style="flex:1; min-height:0; display:flex; flex-direction:column;">
       <div class="sec-label">ประวัติ</div>
       <div class="log-scroll" id="log-scroll">
@@ -310,20 +284,19 @@ input[type=range] { flex: 1; accent-color: var(--aa-h); height: 2px; cursor: poi
       </div>
       <a href="/export" class="export-btn" download>⬇ ดาวน์โหลด CSV</a>
     </div>
-
   </aside>
 </div>
 <div id="toast"></div>
 
 <script>
-const WS = `ws://${location.hostname}:8765`;
+// ── FIX: ใช้ wss:// และ path /ws แทน ws:// port แยก ──────────────────────
+const WS_URL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws';
+
 let ws, reconnTimer, sessTimer, sessStart;
-const C = { AA:0, A:0, B:0, C:0 };
-let total = 0;
 
 /* ── WebSocket ─────────────────────────────────── */
 function connect() {
-  ws = new WebSocket(WS);
+  ws = new WebSocket(WS_URL);
   ws.onopen  = () => { setWs(true); clearTimeout(reconnTimer); };
   ws.onclose = () => { setWs(false); reconnTimer = setTimeout(connect, 3000); };
   ws.onerror = () => ws.close();
@@ -332,20 +305,17 @@ function connect() {
 function send(o) { if (ws?.readyState === 1) ws.send(JSON.stringify(o)); }
 
 function handle(m) {
-  if (m.type === 'init') {
-    applyStatus(m); applyStats(m);
-    m.history?.slice(0,80).forEach(addLog);
-    if (m.cameras) fillCams(m.cameras);
-  }
-  else if (m.type === 'frame')  showFrame(m.data);
-  else if (m.type === 'result') { showResult(m.entry); addBelt(m.entry.grade); addLog(m.entry); applyStats(m); }
-  else if (m.type === 'status') applyStatus(m);
-  else if (m.type === 'reset')  doReset();
+  if      (m.type === 'init')    { applyStatus(m); applyStats(m); m.history?.slice(0,80).forEach(addLog); if (m.cameras) fillCams(m.cameras); }
+  else if (m.type === 'frame')   showFrame(m.data);
+  else if (m.type === 'result')  { showResult(m.entry); addBelt(m.entry.grade); addLog(m.entry); applyStats(m); }
+  else if (m.type === 'status')  applyStatus(m);
+  else if (m.type === 'reset')   doReset();
   else if (m.type === 'cameras') fillCams(m.cameras);
-  else if (m.type === 'error')  toast('⚠ ' + m.message);
+  else if (m.type === 'error')   toast('⚠ ' + m.message);
+  else if (m.type === 'config')  { document.getElementById('iv-slider').value = m.interval; document.getElementById('iv-val').textContent = parseFloat(m.interval).toFixed(1)+'s'; }
 }
 
-/* ── Status / WebSocket ────────────────────────── */
+/* ── WebSocket status ──────────────────────────── */
 function setWs(ok) {
   document.getElementById('ws-pulse').className = 'pulse ' + (ok ? 'live' : 'err');
   document.getElementById('ws-label').textContent = ok ? 'connected' : 'reconnecting…';
@@ -358,19 +328,16 @@ function applyStatus(m) {
   document.getElementById('scan-beam').className = 'scan-beam' + (on ? ' active' : '');
   document.getElementById('cam-area').classList.toggle('live', on);
   document.getElementById('cam-status-text').textContent = on ? 'รอภาพจากกล้อง…' : 'กด "เริ่ม" เพื่อเปิดกล้อง';
-  if (on && !sessTimer) {
-    sessStart = Date.now();
-    sessTimer = setInterval(tickClock, 1000);
-  }
-  if (!on && sessTimer) { clearInterval(sessTimer); sessTimer = null; }
+  if (on && !sessTimer) { sessStart = Date.now(); sessTimer = setInterval(tickClock, 1000); }
+  if (!on && sessTimer)  { clearInterval(sessTimer); sessTimer = null; }
 }
 
 function tickClock() {
   const s = Math.floor((Date.now() - sessStart) / 1000);
   const h = String(Math.floor(s/3600)).padStart(2,'0');
   const m = String(Math.floor((s%3600)/60)).padStart(2,'0');
-  const sec = String(s%60).padStart(2,'0');
-  document.getElementById('session-clock').textContent = `${h}:${m}:${sec}`;
+  const sc = String(s%60).padStart(2,'0');
+  document.getElementById('session-clock').textContent = h+':'+m+':'+sc;
 }
 
 /* ── Camera frame ──────────────────────────────── */
@@ -382,7 +349,6 @@ function showFrame(b64) {
 }
 
 /* ── Result ────────────────────────────────────── */
-const gcol = { AA:'var(--aa-h)', A:'var(--a-h)', B:'var(--b-h)', C:'var(--c-h)' };
 const recCls = { 'ผ่าน':'pass', 'ตรวจสอบ':'check', 'ปฏิเสธ':'reject' };
 
 function showResult(r) {
@@ -391,24 +357,18 @@ function showResult(r) {
   el.textContent = g;
   el.className = 'result-glyph ' + g;
   document.getElementById('r-weight').textContent = r.estimatedWeight || '— g';
-
   const chips = document.getElementById('r-chips');
   chips.innerHTML = '';
-  const add = (txt, cls) => { const c = document.createElement('span'); c.className = 'chip' + (cls ? ' '+cls : ''); c.textContent = txt; chips.appendChild(c); };
+  const add = (txt, cls) => { const c = document.createElement('span'); c.className = 'chip' + (cls?' '+cls:''); c.textContent = txt; chips.appendChild(c); };
   add(r.confidence + '%');
   add(r.shellCondition || '—');
   add(r.color || '—');
   if (r.recommendation) add(r.recommendation, recCls[r.recommendation] || '');
-
-  const stamp = document.getElementById('grade-stamp');
-  const pill  = document.getElementById('grade-pill');
-  pill.textContent = g;
-  pill.className = 'grade-pill ' + g;
-  stamp.style.display = 'block';
-
+  const pill = document.getElementById('grade-pill');
+  pill.textContent = g; pill.className = 'grade-pill ' + g;
+  document.getElementById('grade-stamp').style.display = 'block';
   document.getElementById('weight-tag').textContent = r.estimatedWeight || '—';
   document.getElementById('weight-tag').style.display = 'block';
-
   const conf = r.confidence || 0;
   const bar  = document.getElementById('conf-bar');
   bar.style.width = conf + '%';
@@ -431,17 +391,17 @@ function addBelt(g) {
 /* ── Stats ─────────────────────────────────────── */
 function applyStats(m) {
   const cn = m.counts || {};
-  total = m.total || 0;
-  const pass = m.pass || 0;
+  const total = m.total || 0;
+  const pass  = m.pass  || 0;
   document.getElementById('kpi-total').textContent = total;
-  document.getElementById('kpi-aa').textContent = cn.AA || 0;
-  document.getElementById('kpi-a').textContent  = cn.A  || 0;
-  document.getElementById('kpi-b').textContent  = cn.B  || 0;
-  document.getElementById('kpi-c').textContent  = cn.C  || 0;
-  document.getElementById('kpi-rate').textContent = total > 0 ? Math.round(pass/total*100)+'%' : '—';
+  document.getElementById('kpi-aa').textContent    = cn.AA || 0;
+  document.getElementById('kpi-a').textContent     = cn.A  || 0;
+  document.getElementById('kpi-b').textContent     = cn.B  || 0;
+  document.getElementById('kpi-c').textContent     = cn.C  || 0;
+  document.getElementById('kpi-rate').textContent  = total > 0 ? Math.round(pass/total*100)+'%' : '—';
   ['AA','A','B','C'].forEach(g => {
-    document.getElementById('n-'+g).textContent = cn[g] || 0;
-    document.getElementById('bar-'+g).style.width = total > 0 ? Math.round((cn[g]||0)/total*100)+'%' : '0%';
+    document.getElementById('n-'+g).textContent      = cn[g] || 0;
+    document.getElementById('bar-'+g).style.width    = total > 0 ? Math.round((cn[g]||0)/total*100)+'%' : '0%';
   });
 }
 
@@ -453,15 +413,18 @@ function addLog(r) {
   const row = document.createElement('div');
   row.className = 'log-row';
   const rc = recCls[r.recommendation] || '';
-  row.innerHTML = `<span class="log-id">#${String(r.id).padStart(3,'0')}</span><span class="log-time">${r.time}</span><span class="log-g ${r.grade}">${r.grade}</span><span class="log-w">${r.estimatedWeight||'—'}</span><span class="log-rec ${rc}">${r.recommendation||'—'}</span>`;
+  row.innerHTML = '<span class="log-id">#'+String(r.id).padStart(3,'0')+'</span>'
+    +'<span class="log-time">'+r.time+'</span>'
+    +'<span class="log-g '+r.grade+'">'+r.grade+'</span>'
+    +'<span class="log-w">'+(r.estimatedWeight||'—')+'</span>'
+    +'<span class="log-rec '+rc+'">'+(r.recommendation||'—')+'</span>';
   wrap.insertBefore(row, wrap.firstChild);
   while (wrap.children.length > 80) wrap.removeChild(wrap.lastChild);
 }
 
 /* ── Reset ──────────────────────────────────────── */
 function doReset() {
-  total = 0;
-  ['total','aa','a','b','c'].forEach(k => document.getElementById('kpi-'+k).textContent = k === 'rate' ? '—' : '0');
+  ['kpi-total','kpi-aa','kpi-a','kpi-b','kpi-c'].forEach(k => document.getElementById(k).textContent = '0');
   document.getElementById('kpi-rate').textContent = '—';
   ['AA','A','B','C'].forEach(g => { document.getElementById('n-'+g).textContent = '0'; document.getElementById('bar-'+g).style.width = '0%'; });
   document.getElementById('belt').innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--dimmer);padding-left:16px;">รอไข่…</span>';
@@ -489,7 +452,9 @@ function setIv(v) {
 }
 function fillCams(cams) {
   const sel = document.getElementById('cam-select');
-  sel.innerHTML = cams.length ? cams.map(i => `<option value="${i}">Camera ${i}${i===0?' (default)':''}</option>`).join('') : '<option value="0">ไม่พบกล้อง</option>';
+  sel.innerHTML = cams.length
+    ? cams.map(i => '<option value="'+i+'">Camera '+i+(i===0?' (default)':'')+'</option>').join('')
+    : '<option value="0">ไม่พบกล้อง</option>';
   toast('พบกล้อง ' + cams.length + ' ตัว');
 }
 
